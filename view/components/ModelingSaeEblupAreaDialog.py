@@ -31,6 +31,7 @@ class ModelingSaeDialog(QDialog):
         self.variables_model = QStringListModel(self.columns)
         self.variables_list.setModel(self.variables_model)
         self.variables_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.variables_list.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         left_layout.addWidget(self.variables_label)
         left_layout.addWidget(self.variables_list)
         
@@ -67,6 +68,7 @@ class ModelingSaeDialog(QDialog):
         self.of_interest_model = QStringListModel()
         self.of_interest_list.setModel(self.of_interest_model)
         self.of_interest_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.of_interest_list.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         right_layout.addWidget(self.of_interest_label)
         right_layout.addWidget(self.of_interest_list)
 
@@ -75,6 +77,7 @@ class ModelingSaeDialog(QDialog):
         self.auxilary_model = QStringListModel()
         self.auxilary_list.setModel(self.auxilary_model)
         self.auxilary_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.auxilary_list.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         right_layout.addWidget(self.auxilary_label)
         right_layout.addWidget(self.auxilary_list)
 
@@ -82,13 +85,16 @@ class ModelingSaeDialog(QDialog):
         self.as_factor_list = QListView()
         self.as_factor_model = QStringListModel()
         self.as_factor_list.setModel(self.as_factor_model)
+        self.as_factor_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.as_factor_list.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         right_layout.addWidget(self.as_factor_label)
         right_layout.addWidget(self.as_factor_list)
         
-        self.vardir_label = QLabel("Varian Direct:")
+        self.vardir_label = QLabel("Varians Direct:")
         self.vardir_list = QListView()
         self.vardir_model = QStringListModel()
         self.vardir_list.setModel(self.vardir_model)
+        self.vardir_list.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         right_layout.addWidget(self.vardir_label)
         right_layout.addWidget(self.vardir_list)
 
@@ -109,7 +115,7 @@ class ModelingSaeDialog(QDialog):
         
         # Area teks untuk menampilkan dan mengedit skrip R
         self.r_script_edit = QTextEdit()
-        self.r_script_edit.setFixedHeight(200)
+        self.r_script_edit.setFixedHeight(150)
         self.r_script_edit.setReadOnly(False)
         main_layout.addWidget(self.r_script_edit)
 
@@ -138,8 +144,13 @@ class ModelingSaeDialog(QDialog):
         self.variables_model.setStringList(self.columns)
     
     def accept(self):
-        if not self.vardir_var:
-            QMessageBox.warning(self, "Warning", "Varian Direct cannot be empty.")
+        if not self.of_interest_var or not self.vardir_var:
+            missing_fields = []
+            if not self.of_interest_var:
+                missing_fields.append("Variable of Interest")
+            if not self.vardir_var:
+                missing_fields.append("Varians Direct")
+            QMessageBox.warning(self, "Warning", f"{' and '.join(missing_fields)} cannot be empty.")
             self.ok_button.setEnabled(True)
             self.option_button.setEnabled(True)
             self.ok_button.setText("Run Model")

@@ -83,6 +83,7 @@ def unassign_variable(parent):
         parent.of_interest_model.setStringList(parent.of_interest_var)
         parent.variables_list.model().insertRow(0)  # Add back to variables list
         parent.variables_list.model().setData(parent.variables_list.model().index(0), selected_items[0])
+        show_r_script(parent)
         return
 
     selected_indexes = parent.auxilary_list.selectedIndexes()
@@ -93,6 +94,7 @@ def unassign_variable(parent):
         for item in selected_items:
             parent.variables_list.model().insertRow(0)  # Add back to variables list
             parent.variables_list.model().setData(parent.variables_list.model().index(0), item)
+            show_r_script(parent)
         return
 
     selected_indexes = parent.vardir_list.selectedIndexes()
@@ -103,6 +105,7 @@ def unassign_variable(parent):
         for item in selected_items:
             parent.variables_list.model().insertRow(0)  # Add back to variables list
             parent.variables_list.model().setData(parent.variables_list.model().index(0), item)
+            show_r_script(parent)
         return
 
     selected_indexes = parent.as_factor_list.selectedIndexes()
@@ -113,16 +116,16 @@ def unassign_variable(parent):
         for item in selected_items:
             parent.variables_list.model().insertRow(0)  # Add back to variables list
             parent.variables_list.model().setData(parent.variables_list.model().index(0), item)
-    show_r_script(parent)
+        show_r_script(parent)
 
 def get_selected_variables(parent):
     return parent.of_interest_var, parent.auxilary_vars, parent.vardir_var, parent.as_factor_var
 
 def generate_r_script(parent):
-    of_interest_var = f'{parent.of_interest_var[0].split(" [")[0].replace(" ", "_")}' if parent.of_interest_var else '""'
+    of_interest_var = f'{parent.of_interest_var[0].split(" [")[0].replace(" ", "_")}' if parent.of_interest_var else None
     auxilary_vars = " + ".join([var.split(" [")[0].replace(" ", "_") for var in parent.auxilary_vars])
-    vardir_var = f'{parent.vardir_var[0].split(" [")[0].replace(" ", "_")}' if parent.vardir_var else '""'
-    as_factor_var = " + ".join([f'as.factor({var.split(" [")[0].replace(" ", "_")})' for var in parent.as_factor_var]) if parent.as_factor_var else '""'
+    vardir_var = f'{parent.vardir_var[0].split(" [")[0].replace(" ", "_")}' if parent.vardir_var else None
+    as_factor_var = " + ".join([f'as.factor({var.split(" [")[0].replace(" ", "_")})' for var in parent.as_factor_var]) if parent.as_factor_var else None
     
     if auxilary_vars and as_factor_var:
         formula = f'{of_interest_var} ~ {auxilary_vars} + {as_factor_var}'
@@ -135,7 +138,6 @@ def generate_r_script(parent):
 
     r_script = f'names(data) <- gsub(" ", "_", names(data)); #Replace space with underscore\n'
     r_script += f'formula <- {formula}\n'
-    r_script += f'vardir_var <- data["{vardir_var}"]\n'
     if parent.selection_method=="Stepwise":
         parent.selection_method = "both"
     if parent.selection_method and parent.selection_method != "None" and auxilary_vars:

@@ -19,7 +19,6 @@ def run_model_eblup_area(parent):
         result = "\n".join(result_str)
         estimated_value = ro.conversion.rpy2py(ro.globalenv['estimated_value'])
         mse = ro.conversion.rpy2py(ro.globalenv['mse'])
-        vardir_var = ro.conversion.rpy2py(ro.globalenv['vardir_var'])
         estimated_value = estimated_value.flatten()
         vardir_var = vardir_var.to_numpy()[:, 0]
         rse = mse**0.5/estimated_value*100
