@@ -7,6 +7,7 @@ from controller.FileController import FileController
 from view.MainWindow import MainWindow
 from service.main.CheckEnviroment import check_environment
 
+
 def load_stylesheet():
     """
     Fungsi untuk memuat stylesheet dari file .qss.
