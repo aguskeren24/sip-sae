@@ -11,7 +11,7 @@ def run_model_eblup_area(parent):
         r_df = rpy2polars.converter.py2rpy(df)
         ro.globalenv['r_df'] = r_df
     try:
-        ro.r('suppressMessages(library(sae))')
+        ro.r('library(sae)')
         ro.r('data <- as.data.frame(r_df)')
         ro.r(parent.r_script)
         ro.r('estimated_value <- model$est$eblup\n mse <- model$mse')
